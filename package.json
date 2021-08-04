@@ -19,6 +19,7 @@
   },
   "author": "phostann",
   "license": "MIT",
+  "main": "template.json",
   "files": [
     "template",
     "template.json"
