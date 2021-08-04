@@ -9,6 +9,11 @@
     "yotoo"
   ],
   "description": "yotoo create-react-app custom template",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/phostann/cra-template-yotoo",
+    "directory": "/"
+  },
   "engines": {
     "node": ">=10"
   },
