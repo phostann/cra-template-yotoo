@@ -1,0 +1,29 @@
+before_script:
+  - echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
+  - chmod 644 ~/.ssh/known_hosts
+
+stages:
+  - install
+  - build
+  - deploy
+
+cache: # 缓存
+  paths:
+    - node_modules
+    - build
+
+install-job:
+  stage: install
+  script:
+    - yarn
+
+
+build-job:
+  stage: build
+  script:
+    - yarn build
+
+deploy-job:
+  stage: deploy
+  script:
+    - sshpass -p $PASSWORD scp -r ./build/* $USERNAME@$IP:$PATH

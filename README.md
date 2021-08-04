@@ -1,46 +1,78 @@
-# Getting Started with Create React App
+# 自定义 Create-React-App 模板
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## 目录结构
 
-## Available Scripts
+```shell
+|-- [your project name]
+|   |-- public
+|   |-- src
+|   |   |-- __test__ # 单元测试工具包
+|   |   |-- app
+|   |   |   |-- reducer.ts # 创建 reducer
+|   |   |   |-- store.ts # 配置 store
+|   |   |-- components # 存放全局公共组件
+|   |   |-- features # 功能模块，页面级
+|   |   |   |-- components # 页面级组件
+|   |   |   |-- slice # 切片
+|   |   |   |   |-- counterState.ts # 定义切片类型及初始值
+|   |   |   |   |-- index.ts # 创建切片
+|   |   |   |   |-- saga.ts # 创建 saga
+|   |   |   |   |-- selectors.ts # 数据 selector 从全局仓库中选择需要的部分
+|   |   |   |-- Counter.tsx # 页面 ui 和逻辑
+|   |   |   |-- Counter.test.tsx # 单元测试
+|   |   |   |-- style.ts # 页面样式
+|   |   |-- hooks # 公用自定义 hooks
+|   |   |-- styles # 全局样式
+|   |   |-- theme # 主题配置
+|   |   |-- types # 数据流 types
+|   |   |-- utils # 通用工具包
+|   |   |-- App.tsx
+|   |   |-- index.tsx
+```
 
-In the project directory, you can run:
+## 使用方法
 
-### `yarn start`
+### 1. 创建项目
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+```shell
+yarn create react-app [project-name] --template yotoo 
+```
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### 2. 添加远程仓库
 
-### `yarn test`
+```shell
+git remote add origin ssh://git@ip:port/group-name/project-name.git
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 3. 配置 `gitlab ci Environment variables`
 
-### `yarn build`
+```shell
+USERNAME: # username
+PASSWORD: # password
+IP: # ip address
+PATH: # path of the static folder
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 4. 配置 `nginx`
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```shell
+# 配置好端口号 以及静态文件路径，需要与上一步中的 PATH 一致
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### 5. `lint` 校验
 
-### `yarn eject`
+```shell
+yarn lint
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### 6. 单元测试
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```shell
+yarn test
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### 7. 提交代码至 dev 分支
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+```shell
+# 触发 ci 流程，进行自动化部署
+```
