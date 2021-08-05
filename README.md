@@ -47,10 +47,8 @@ git remote add origin ssh://git@ip:port/group-name/project-name.git
 ### 3. 配置 `gitlab ci Environment variables`
 
 ```shell
-USERNAME: # username
-PASSWORD: # password
-IP: # ip address
-PATH: # path of the static folder
+STATIC_PATH: # path of the static folder
+# 只需要配置上传路径，其余变量假定已在 group cicd 中配置好
 ```
 
 ### 4. 配置 `nginx`
