@@ -4,6 +4,8 @@ before_script:
 
 stages:
   - install
+  - lint
+  - test
   - build
   - deploy
 
@@ -17,6 +19,15 @@ install-job:
   script:
     - yarn
 
+lint-job:
+  stage: lint
+  script:
+    - yarn lint
+
+test-job:
+  stage: test
+  script:
+    - yarn test:coverage
 
 build-job:
   stage: build
@@ -26,4 +37,4 @@ build-job:
 deploy-job:
   stage: deploy
   script:
-    - sshpass -p $PASSWORD scp -r ./build/* $USERNAME@$IP:$PATH
+    - sshpass -p $PASSWORD scp -r ./build/* $USERNAME@$IP:$STATIC_PATH
