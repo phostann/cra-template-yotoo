@@ -33,6 +33,7 @@
       "typescript": "^4.1.2"
     },
     "scripts": {
+      "start": "react-scripts start .env.local",
       "lint": "eslint --ext .ts --ext .tsx .",
       "test:coverage": "react-scripts test --watchAll=false --coverage"
     },
