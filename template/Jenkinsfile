@@ -25,8 +25,8 @@ pipeline {
         stage ("Docker Clean") {
             steps {
                 script {
-                    def containerRunning = sh(script: "docker ps --filter name=${params.CONTAINER_NAME}", returnStdout: true) != 0
-                    def containerExists = sh(script: "docker ps -a --filter name=${params.CONTAINER_NAME}", returnStdout: true) != 0
+                    def containerRunning = sh(script: "docker ps --filter name=${params.CONTAINER_NAME}", returnStdout: true).trim().contains("${params.CONTAINER_NAME}")
+                    def containerExists = sh(script: "docker ps -a --filter name=${params.CONTAINER_NAME}", returnStdout: true).trim().contains("${params.CONTAINER_NAME}")
                     if (containerRunning) {
                         sh "docker stop ${params.CONTAINER_NAME}"
                     }
