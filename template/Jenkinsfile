@@ -4,9 +4,8 @@ pipeline {
         NEXUS_CREDENTIALS = credentials('4531cb27-4243-4446-adfb-7a7fc250b30f')
     }
     parameters {
-        string (name: "PORT", defaultValue: "8088", description: '映射端口')
+        string (name: "PORT", defaultValue: "10000", description: '映射端口')
         string (name: "IMAGE_NAME", defaultValue: "react-web", description: '镜像名称')
-        string (name: "CONTAINER_NAME", defaultValue: "react-image", description: '容器名称')
         string (name: "REPOSITORY", defaultValue: "192.168.31.165:9997", description: "仓库地址")
     }
     stages {
@@ -25,20 +24,22 @@ pipeline {
         stage ("Docker Clean") {
             steps {
                 script {
-                    def containerRunning = sh(script: "docker ps --filter name=${params.CONTAINER_NAME}", returnStdout: true).trim().contains("${params.CONTAINER_NAME}")
-                    def containerExists = sh(script: "docker ps -a --filter name=${params.CONTAINER_NAME}", returnStdout: true).trim().contains("${params.CONTAINER_NAME}")
+                    def containerRunning = sh(script: "docker ps --filter name=${params.IMAGE_NAME}-container", returnStdout: true).trim().contains("${params.IMAGE_NAME}-container")
+                    echo "containerRunning $containerRunning"
                     if (containerRunning) {
-                        sh "docker stop ${params.CONTAINER_NAME}"
+                        sh "docker stop ${params.IMAGE_NAME}-container"
                     }
+                    def containerExists = sh(script: "docker ps -a --filter name=${params.IMAGE_NAME}-container", returnStdout: true).trim().contains("${params.IMAGE_NAME}-container")
+                    echo "containerExists $containerExists"
                     if (containerExists) {
-                        sh "docker rm ${params.CONTAINER_NAME}"
+                        sh "docker rm ${params.IMAGE_NAME}-container"
                     }
                 }
             }
         }
         stage ("Docker Run") {
             steps {
-                sh "docker run --name ${CONTAINER_NAME} -d -p ${params.PORT}:80 ${params.REPOSITORY}/${params.IMAGE_NAME}"
+                sh "docker run --name ${IMAGE_NAME} -d -p ${params.PORT}:80 ${params.REPOSITORY}/${params.IMAGE_NAME}"
             }
             post {
                 always {
