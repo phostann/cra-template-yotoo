@@ -24,22 +24,22 @@ pipeline {
         stage ("Docker Clean") {
             steps {
                 script {
-                    def containerRunning = sh(script: "docker ps --filter name=${params.IMAGE_NAME}-container", returnStdout: true).trim().contains("${params.IMAGE_NAME}-container")
+                    def containerRunning = sh(script: "docker ps --filter name=${params.IMAGE_NAME}", returnStdout: true).trim().contains("${params.IMAGE_NAME}")
                     echo "containerRunning $containerRunning"
                     if (containerRunning) {
-                        sh "docker stop ${params.IMAGE_NAME}-container"
+                        sh "docker stop ${params.IMAGE_NAME}"
                     }
-                    def containerExists = sh(script: "docker ps -a --filter name=${params.IMAGE_NAME}-container", returnStdout: true).trim().contains("${params.IMAGE_NAME}-container")
+                    def containerExists = sh(script: "docker ps -a --filter name=${params.IMAGE_NAME}", returnStdout: true).trim().contains("${params.IMAGE_NAME}")
                     echo "containerExists $containerExists"
                     if (containerExists) {
-                        sh "docker rm ${params.IMAGE_NAME}-container"
+                        sh "docker rm ${params.IMAGE_NAME}"
                     }
                 }
             }
         }
         stage ("Docker Run") {
             steps {
-                sh "docker run --name ${IMAGE_NAME} -d -p ${params.PORT}:80 ${params.REPOSITORY}/${params.IMAGE_NAME}"
+                sh "docker run --name ${params.IMAGE_NAME} -d -p ${params.PORT}:80 ${params.REPOSITORY}/${params.IMAGE_NAME}"
             }
             post {
                 always {
