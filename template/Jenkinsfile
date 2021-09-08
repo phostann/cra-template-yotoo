@@ -1,0 +1,50 @@
+pipeline {
+    agent any
+    environment {
+        NEXUS_CREDENTIALS = credentials('4531cb27-4243-4446-adfb-7a7fc250b30f')
+    }
+    parameters {
+        string (name: "PORT", defaultValue: "8088", description: '映射端口')
+        string (name: "IMAGE_NAME", defaultValue: "react-web", description: '镜像名称')
+        string (name: "CONTAINER_NAME", defaultValue: "react-image", description: '容器名称')
+        string (name: "REPOSITORY", defaultValue: "192.168.31.165:9997", description: "仓库地址")
+    }
+    stages {
+        stage("Build") {
+            steps {
+                sh "yarn && yarn build"
+            }
+        }
+        stage("Docker Build") {
+            steps {
+                sh "docker build -t ${params.REPOSITORY}/${params.IMAGE_NAME} ."
+                sh "docker login -u ${NEXUS_CREDENTIALS_USR} -p ${NEXUS_CREDENTIALS_PSW} ${params.REPOSITORY}"
+                sh "docker push ${params.REPOSITORY}/${params.IMAGE_NAME}"
+            }
+        }
+        stage ("Docker Clean") {
+            steps {
+                script {
+                    def containerRunning = sh(script: "docker ps --filter name=${params.CONTAINER_NAME}", returnStdout: true) != 0
+                    def containerExists = sh(script: "docker ps -a --filter name=${params.CONTAINER_NAME}", returnStdout: true) != 0
+                    if (containerRunning) {
+                        sh "docker stop ${params.CONTAINER_NAME}"
+                    }
+                    if (containerExists) {
+                        sh "docker rm ${params.CONTAINER_NAME}"
+                    }
+                }
+            }
+        }
+        stage ("Docker Run") {
+            steps {
+                sh "docker run --name ${CONTAINER_NAME} -d -p ${params.PORT}:80 ${params.REPOSITORY}/${params.IMAGE_NAME}"
+            }
+            post {
+                always {
+                   jiraSendDeploymentInfo site: 'yotoo.atlassian.net', environmentId: 'us-prod-1', environmentName: 'us-prod-1', environmentType: 'production'
+                }
+            }
+        }
+    }
+}
